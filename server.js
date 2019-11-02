@@ -1,10 +1,13 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const Datauri = require('datauri');
 
 const http = require('http');
 const request = require('request');
 const fs = require('fs');
+const path = require('path');
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -19,6 +22,19 @@ const CLIENT_ID = "883452357556-rsf99lsl7dl28f092b86q5j5aqk989bf.apps.googleuser
 const app = express();
 const server = http.createServer(app);
 const client = new OAuth2Client(CLIENT_ID);
+
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage: storage
+});
+const datauri = new Datauri();
+
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+    cloud_name: 'yashshekar',
+    api_key: '767546722944791',
+    api_secret: 'ClFxvVf5n3qiibjUqNRdJF-o8Ik'
+});
 
 if (DEV_MODE) {
     const config = require('./webpack.dev.js');
@@ -94,6 +110,28 @@ app.post('/googleAuth', async (req, res) => {
     } catch (err) {
         console.error(err.stack);
         res.status(500).send({error: err.stack});
+    }
+});
+
+// Upload photos
+app.post('/upload', upload.any(), (req, res) => {
+    if ('userInfo' in req.session) {
+        for (let i = 0; i < req.files.length; i++) {
+            const file = req.files[i];
+            const extname = path.extname(file.originalname).toString();
+            datauri.format(extname, file.buffer);
+            cloudinary.uploader.upload(datauri.content, (err, res) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    const url = res.secure_url;
+                    console.log(url);
+                }
+            });
+        }
+        res.sendStatus(200);
+    } else {
+        res.status(400).send({error: 'Not logged in.'});
     }
 });
 
