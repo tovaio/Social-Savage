@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
     "start": "ts-node server.ts",
-    "server": "ts-node server.ts --dev_mode"
+    "server": "nodemon --exec ts-node server.ts --dev_mode"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.8.0",
+    "nodemon": "^1.19.4",
     "react-hot-loader": "^4.12.15",
     "style-loader": "^1.0.0",
     "ts-loader": "^6.2.1",
@@ -59,5 +60,8 @@
     "request": "^2.88.0",
     "tsd": "^0.10.0",
     "url": "^0.11.0"
+  },
+  "nodemonConfig": {
+    "ignore": ["src/*", "dist/*"]
   }
 }
