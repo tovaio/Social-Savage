@@ -5,12 +5,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        app: './src/index.tsx'
+        app: './src/index.jsx'
     },
     module: {
         rules: [
             {
-                test: /\.(js|ts|jsx|tsx)$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: [
                     'babel-loader'
@@ -25,9 +25,15 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
+        extensions: ['*', '.js', '.jsx'],
     },
     plugins: [
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            React: 'react',
+            ReactDOM: 'react-dom'
+        }),
         new HtmlWebpackPlugin({
             title: 'VandyHacks VI App'
         })

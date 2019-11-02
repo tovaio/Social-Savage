@@ -1,7 +1,4 @@
-import ReactDOM from 'react-dom';
-import React from 'react';
 import App from './App';
-import $ from 'jquery';
 
 $(() => {
     $('body').append($('<div></div>').attr('id', 'root'));

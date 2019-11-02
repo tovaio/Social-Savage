@@ -8,7 +8,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = merge(common, {
     mode: 'development',
     entry: {
-        app: ['./src/index.tsx', 'webpack-hot-middleware/client']
+        app: ['./src/index.jsx', 'webpack-hot-middleware/client']
     },
     devtool: 'inline-source-map',
     module: {

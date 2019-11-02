@@ -33,26 +33,64 @@ if (DEV_MODE) {
         res.sendFile(__dirname + '/dist/index.html');
     })
     app.use(express.static(__dirname + '/dist'));
+    app.set('trust proxy', 1);
 }
 
+app.use(session({
+    secret: 'vandyhacksvi2019'
+}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-async function verify(token) {
+async function getUserInfo(token) {
     const ticket = await client.verifyIdToken({
         idToken: token,
         audience: CLIENT_ID
     });
     const payload = ticket.getPayload();
-    const userId = payload['sub'];
-    return userId;
+    return {
+        userId: payload['sub'],
+        givenName: payload['given_name'],
+        familyName: payload['family_name']
+    };
 }
 
+// Check if logged in / log out
+app.get('/googleAuth', (req, res) => {
+    if ('logout' in req.query && req.query.logout == 'true') {
+        // logging out
+        req.session.destroy()
+        res.status(200).send({success: true});
+    } else {
+        // checking if logged in
+        if ('userInfo' in req.session) {
+            res.send({
+                loginInfo: {
+                    loggedIn: true,
+                    userInfo: req.session.userInfo
+                }
+            });
+        } else {
+            res.send({
+                loginInfo: {
+                    loggedIn: false
+                }
+            })
+        }
+    }
+})
+
+// Log in
 app.post('/googleAuth', async (req, res) => {
     try {
-        console.log(req.body);
-        const userId = await verify(req.body.tokenId);
-        res.send({userId: userId});
+        const userInfo = await getUserInfo(req.body.tokenId);
+        req.session.userInfo = userInfo;
+        res.send({
+            loginInfo: {
+                loggedIn: true,
+                userInfo: userInfo
+            }
+        });
     } catch (err) {
         console.error(err.stack);
         res.status(500).send({error: err.stack});
