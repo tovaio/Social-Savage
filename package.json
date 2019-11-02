@@ -1,0 +1,63 @@
+{
+  "name": "vandyhacks2019",
+  "version": "1.0.0",
+  "description": "Project for Vandy Hacks VI: Art Edition",
+  "main": "server.js",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.prod.js",
+    "start": "ts-node server.ts",
+    "server": "ts-node server.ts --dev_mode"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tvadakumchery1/VandyHacks2019.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tvadakumchery1/VandyHacks2019/issues"
+  },
+  "homepage": "https://github.com/tvadakumchery1/VandyHacks2019#readme",
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "@babel/preset-typescript": "^7.6.0",
+    "@types/jquery": "^3.3.31",
+    "@types/webpack-env": "^1.14.1",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.2.0",
+    "file-loader": "^4.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "react-hot-loader": "^4.12.15",
+    "style-loader": "^1.0.0",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.6.3",
+    "browser-request": "^0.3.3",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "jquery": "^3.4.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "request": "^2.88.0",
+    "tsd": "^0.10.0",
+    "url": "^0.11.0"
+  }
+}

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Helvetica Light';
+    src: url('./fonts/Helvetica-Light.woff') format('woff'),
+         url('./fonts/Helvetica-Light.woff2') format('woff2');
+}
+
+#title {
+    font-family: 'Helvetica Light', Helvetica, sans-serif;
+}
