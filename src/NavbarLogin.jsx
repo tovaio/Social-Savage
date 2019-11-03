@@ -34,13 +34,14 @@ class NavbarLogin extends React.Component {
                 <Navbar.Text>
                     {
                         this.props.loginInfo.loggedIn ? 
-                            `Signed in as: ${this.props.loginInfo.userInfo.givenName}` :
+                            `Hello, ${this.props.loginInfo.userInfo.givenName}!` :
                             'Get started now!'
                     }
                 </Navbar.Text>
                 {
                     this.props.loginInfo.loggedIn ?
                         <GoogleLogout 
+                            className='ml-3'
                             clientId = {CLIENT_ID}
                             buttonText = "Logout"
                             onLogoutSuccess = {this.handleLogoutSuccess}

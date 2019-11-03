@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
-import Carousel from 'react-bootstrap/Carousel';
 import Image from 'react-bootstrap/Image';
 
 const MAX_CAPTIONS = 5;
@@ -59,7 +58,7 @@ function ImageDisplay(props) {
                     {items}
                 </div>
             </div>
-        )
+        ) 
     } else return null;
 }
 
@@ -154,6 +153,12 @@ class UploadView extends React.Component {
             method: 'POST',
             body: data
         });
+
+        this.setState({
+            captions: [''],
+            error: '',
+            files: []
+        });
     }
 
     render() {
@@ -170,7 +175,9 @@ class UploadView extends React.Component {
         );
 
         return (
-            <Container>
+            <Container className='bg-light rounded p-3 shadow' fluid>
+                <h5 className='mb-3'>Post your ideas for the world to see!</h5>
+
                 <label>Upload Images</label>
                 <InputGroup className='mb-3'>
                     <FormControl type='file' accept="image/png, image/jpeg" multiple onChange={this.handleImageChange}/>
@@ -181,13 +188,17 @@ class UploadView extends React.Component {
                 <label>Enter Potential Captions:</label>
                 {captionInputs}
 
-                <InputGroup className='mb-3'>
+                <InputGroup className='mb-0'>
                     <Button onClick={this.handleSubmit}>Upload</Button>
                 </InputGroup>
 
-                <p className='text-muted'>
-                    {this.state.error}
-                </p>
+                {
+                    (this.state.error != '')
+                        ? <p className='text-muted mt-3 mb-0'>
+                            {this.state.error}
+                        </p>
+                        : null
+                }
             </Container>
         );
     }
