@@ -1,6 +1,8 @@
 import InfiniteScroll from 'react-infinite-scroll-component';
 import request from 'browser-request';
 import url from 'url';
+import Carousel from "react-bootstrap/Carousel";
+import Pagination from "react-bootstrap/Pagination";
 
 
 const style = {
@@ -17,6 +19,36 @@ class RateView extends React.Component {
         rate_list: [],
         offset: 0,
     };
+
+    renderCaptions = (captions) => {
+        const listItems = captions.map((caption, index) =>
+            <li key={index}>
+                <p>{caption}</p>
+            </li>
+        );
+        return (<ul>{listItems}</ul>);
+    };
+    renderImages = (pics) => {
+        const listItems = pics.map((pic, index) =>
+            <Carousel.Item key={index}>
+                <div style={{height: "300px", width: "500px"}}>
+                    <img  src={pic} style={{maxWidth: "100%"}}/>
+                </div>
+            </Carousel.Item>
+        );
+        return (<Carousel style={{height: "300px", width: "500px"}}>{listItems}</Carousel>);
+    };
+    getItems(numImages) {
+        let items = [];
+        for (let number = 1; number <= numImages; number++) {
+            items.push(
+                <Pagination.Item key={number}>
+                    {number}
+                </Pagination.Item>,
+            );
+        }
+        return items
+    }
 
     componentDidMount() {
         this.setState({
@@ -61,9 +93,17 @@ class RateView extends React.Component {
                     loader={<h4>Loading...</h4>}
                 >
                     {this.state.rate_list.map((item, index) => (
-                        <div style={style} key={index}>
-                            {JSON.stringify(item)}
+                        <div style={{display:"flex", flexDirection:"row"}}>
+                            <div style={style} key={index}>
+                                {this.renderImages(item.images)}
+                                {this.renderCaptions(item.captions)}
+                            </div>
+                            <div>
+                                <Pagination size="lg">{this.getItems(item.images.length)}</Pagination>
+                                <br />
+                            </div>
                         </div>
+
                     ))}
                 </InfiniteScroll>
             </div>
