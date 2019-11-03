@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Jumbotron from 'react-bootstrap/Jumbotron';
+import Alert from 'react-bootstrap/Alert';
 
 import ImagePagination from './ImagePagination';
 
@@ -65,7 +66,8 @@ class UploadView extends React.Component {
     state = {
         captions: [''],
         error: '',
-        files: []
+        files: [],
+        justUploaded: false
     }
 
     handleAdd = () => {
@@ -73,7 +75,8 @@ class UploadView extends React.Component {
             const newCaptions = prevState.captions.slice(0);
             newCaptions.push('');
             return {
-                captions: newCaptions
+                captions: newCaptions,
+                justUploaded: false
             };
         });
     }
@@ -83,7 +86,8 @@ class UploadView extends React.Component {
             const newCaptions = prevState.captions.slice(0);
             newCaptions.splice(ind, 1);
             return {
-                captions: newCaptions
+                captions: newCaptions,
+                justUploaded: false
             };
         });
     }
@@ -93,7 +97,8 @@ class UploadView extends React.Component {
             const newCaptions = prevState.captions.slice(0);
             newCaptions[ind] = value;
             return {
-                captions: newCaptions
+                captions: newCaptions,
+                justUploaded: false
             };
         });
     }
@@ -115,7 +120,8 @@ class UploadView extends React.Component {
 
         this.setState({
             files: newFiles,
-            error: (invalid.length > 0) ? `${invalid.join(', ')} image${(invalid.length == 1) ? ' is ' : 's are '} too large. Max file size is 10 MB.` : ''
+            error: (invalid.length > 0) ? `${invalid.join(', ')} image${(invalid.length == 1) ? ' is ' : 's are '} too large. Max file size is 10 MB.` : '',
+            justUploaded: false
         });
 
         e.target.value = '';
@@ -125,7 +131,7 @@ class UploadView extends React.Component {
         this.setState({error: ''});
 
         if (this.state.files.length == 0) {
-            this.setState({error: 'No valid files selected!'});
+            this.setState({error: 'No valid files selected!', justUploaded: false});
             return;
         }
         
@@ -143,12 +149,12 @@ class UploadView extends React.Component {
         });
 
         if (captions.length == 0) {
-            this.setState({error: 'No valid captions entered!'});
+            this.setState({error: 'No valid captions entered!', justUploaded: false});
             return;
         }
 
         if (this.state.files.length == 1 && captions.length == 1) {
-            this.setState({error: 'Need at least 2 of either images or captions!'});
+            this.setState({error: 'Need at least 2 of either images or captions!', justUploaded: false});
             return;
         }
 
@@ -162,7 +168,8 @@ class UploadView extends React.Component {
         this.setState({
             captions: [''],
             error: '',
-            files: []
+            files: [],
+            justUploaded: true
         });
     }
 
@@ -182,6 +189,12 @@ class UploadView extends React.Component {
         return (
             <Container className='bg-light rounded p-3 shadow' fluid>
                 <h4 className='mb-3'>See what the world thinks about your social media ideas!</h4>
+
+                {
+                    this.state.justUploaded
+                        ? <Alert variant='success'>Uploaded!</Alert>
+                        : null
+                }
 
                 <Jumbotron className='p-3'>
                     <h5>Upload Images</h5>
