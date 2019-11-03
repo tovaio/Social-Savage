@@ -96,7 +96,7 @@ postSchema.methods.hasBeenSeenBy = (user) => {
 
 const Post = mongoose.model('Post', postSchema);
 
-async function makePost(_id, files) {
+async function makePost(_id, files, captions) {
     let images = [];
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -106,12 +106,8 @@ async function makePost(_id, files) {
     return new Post({
         author: _id,
         images: images,
-        captions: ['test caption'],
-        ratings: [{
-            rater: _id,
-            topPic: 0,
-            topCaption: 0
-        }]
+        captions: captions,
+        ratings: []
     }).save();
 }
 
@@ -234,7 +230,7 @@ app.post('/logout', (req, res) => {
 app.post('/upload', upload.any(), async (req, res) => {
     try {
         if ('userInfo' in req.session && req.files.length > 0) {
-            await makePost(req.session.userInfo._id, req.files);
+            await makePost(req.session.userInfo._id, req.files, JSON.parse(req.body.captions));
             res.sendStatus(200);
         } else {
             res.status(400).send({error: 'Not logged in.'});
