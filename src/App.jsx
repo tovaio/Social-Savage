@@ -9,7 +9,6 @@ import UploadView from './UploadView';
 import FeedbackView from './FeedbackView';
 import RateView from './RateView';
 
-require('react-drop-zone/dist/styles.css');
 require('bootstrap/dist/css/bootstrap.min.css');
 require('./App.css');
 

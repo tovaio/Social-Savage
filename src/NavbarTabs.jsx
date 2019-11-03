@@ -9,17 +9,17 @@ class NavbarTabs extends React.Component {
     render() {
         if (this.props.loginInfo.loggedIn) {
             return (
-                <Nav className="mr-auto">
-                    <Nav.Link onSelect={this.handleSelect} eventKey={0}>Upload</Nav.Link>
-                    <Nav.Link onSelect={this.handleSelect} eventKey={1}>Feedback</Nav.Link>
-                    <Nav.Link onSelect={this.handleSelect} eventKey={2}>Rate</Nav.Link>
+                <Nav className="mr-auto" onSelect={this.handleSelect}>
+                    <Nav.Link eventKey={0}>Upload</Nav.Link>
+                    <Nav.Link eventKey={1}>Feedback</Nav.Link>
+                    <Nav.Link eventKey={2}>Rate</Nav.Link>
                 </Nav>
             );
         } else {
             return null;
         }
     }
-    
+
 }
 
 export default NavbarTabs;
