@@ -1,4 +1,5 @@
 import Carousel from 'react-bootstrap/Carousel'
+import Container from 'react-bootstrap/Container'
 import request from 'browser-request';
 import url from 'url';
 
@@ -8,52 +9,6 @@ class FeedbackView extends React.Component {
         loading: true,
         feedback: []
     }
-
-    feedbackInfo = {
-        posts: [
-            {
-                pictures: ["https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                    "https://helpx.adobe.com/content/dam/help/en/stock/how-to/visual-reverse-image-search/jcr_content/main-pars/image/visual-reverse-image-search-v2_intro.jpg", "https://www.w3schools.com/w3css/img_lights.jpg",
-                    "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"],
-                suggested_captions: ["cap1", "cap2", "cap3"],
-                tags: ["t1", "t2", "t3"],
-                goalPics: 2,
-                ratings: [
-                    {
-                        topNPics: [0, 1],
-                        topCap: 0,
-                        caption_suggestions: ["goodcap1", "goodcap2"]
-                    },
-                    {
-                        topNPics: [1, 2],
-                        topCap: 0,
-                        caption_suggestions: ["goodcap3", "goodcap4"]
-                    }
-                ]
-            },
-            {
-                pictures: ["https://www.w3schools.com/w3css/img_lights.jpg",
-                    "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500", "https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                    "https://helpx.adobe.com/content/dam/help/en/stock/how-to/visual-reverse-image-search/jcr_content/main-pars/image/visual-reverse-image-search-v2_intro.jpg"],
-                suggested_captions: ["cap1", "cap2", "cap3"],
-                tags: ["t1", "t2", "t3"],
-                goalPics: 2,
-                ratings: [
-                    {
-                        topNPics: [0, 1],
-                        topCap: 0,
-                        caption_suggestions: ["goodcap1", "goodcap2"]
-                    },
-                    {
-                        topNPics: [1, 2],
-                        topCap: 0,
-                        caption_suggestions: ["goodcap3", "goodcap4"]
-                    }
-                ]
-            }
-        ]
-
-    };
 
     renderCaptions = (captions) => {
         const listItems = captions.map((caption, index) =>
@@ -67,21 +22,24 @@ class FeedbackView extends React.Component {
     renderImages = (pics) => {
         const listItems = pics.map((pic, index) =>
             <Carousel.Item key={index}>
-                <img src={pic} height={500} width={1200}/>
+                <div style={{height: "300px", width: "500px"}}>
+
+                <img  src={pic} style={{maxWidth: "100%"}}/>
+                </div>
             </Carousel.Item>
         );
-        return (<Carousel>{listItems}</Carousel>);
+        return (<Carousel style={{height: "300px", width: "500px"}}>{listItems}</Carousel>);
     };
 
     renderPosts = (posts) => {
         const listItems = posts.map((post, index) =>
-            <div key={index} style={{padding: "20px 20px 20px 20px"}}>
+            <Container className='bg-light rounded p-3 shadow' fluid key={index} style={{marginBottom:"30px", width:"75%", display: "flex", flexDirection: "column", alignItems: "center"}}>
                 {this.renderImages(post.images)}
                 <p># of Photos You Want to Post: not yet implemented</p>
                 <p> Your Potential Captions</p>
                 {this.renderCaptions(post.captions)}
                 <p>Your Tags: not yet implemented</p>
-            </div>
+            </Container>
         );
         return listItems;
     }
@@ -110,7 +68,7 @@ class FeedbackView extends React.Component {
     render() {
         return (
             <div>
-                <h1>Your Feedback</h1>
+                <h1 style={{display:"flex", flexDirection: "column", alignItems:"center"}}>Your Feedback</h1>
                 {
                     (this.state.feedback.length > 0)
                         ? this.renderPosts(this.state.feedback)
