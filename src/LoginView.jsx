@@ -57,7 +57,7 @@ class LoginView extends React.Component {
                     fontWeight: "600",
                     fontFamily: `"Open Sans",sans-serif`,
                     marginBottom: "30px"
-                }}>Join ImageCritique Today!</h1>
+                }}>Join SocialSavage Today!</h1>
                 
                 <GoogleLogin 
                     render={renderProps => (
