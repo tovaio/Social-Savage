@@ -14,21 +14,26 @@ class RateView extends React.Component {
     state = {
         items: Array.from({ length: 20 }),
         loading: false,
-        rate_list: []
+        rate_list: [],
+        offset: 0,
     };
 
     componentDidMount() {
         this.setState({
             loading: true,
-            rate_list: []
+            rate_list: [],
+            offset: 0,
         });
         this.fetchMoreData();
     }
 
     fetchMoreData = () => {
         // a fake async api call like which sends
+        // Let's fetch 10 in one time
+        const limit = 10;
+
         request.get({
-            uri: url.resolve(location.href, '/rate')
+            uri: url.resolve(location.href, `/rate?offset=${this.state.offset}&limit=${limit}`)
         }, (err, res, body) => {
             if (err) {
                 console.error(err);
@@ -37,11 +42,12 @@ class RateView extends React.Component {
                 console.log(body)
                 this.setState({
                     loading: false,
-                    rate_list: body
+                    rate_list: [...this.state.rate_list, ...body],
+                    offset: this.state.offset + limit,
                 });
             }
         });
-        console.log("fetch more data")
+        console.log(`/rate?offset=${this.state.offset}&limit=${limit}`)
     };
     render() {
         return (
@@ -49,7 +55,7 @@ class RateView extends React.Component {
                 <h1>Help out other users by rating their posts!</h1>
                 <hr />
                 <InfiniteScroll
-                    dataLength={this.state.items.length}
+                    dataLength={this.state.rate_list.length}
                     next={this.fetchMoreData}
                     hasMore={true}
                     loader={<h4>Loading...</h4>}
