@@ -1,7 +1,11 @@
-import Carousel from 'react-bootstrap/Carousel'
-import Container from 'react-bootstrap/Container'
 import request from 'browser-request';
 import url from 'url';
+
+import Carousel from 'react-bootstrap/Carousel';
+import Container from 'react-bootstrap/Container';
+import Jumbotron from 'react-bootstrap/Jumbotron';
+
+import ImagePagination from './ImagePagination';
 
 class FeedbackView extends React.Component {
 
@@ -33,13 +37,13 @@ class FeedbackView extends React.Component {
 
     renderPosts = (posts) => {
         const listItems = posts.map((post, index) =>
-            <Container className='bg-light rounded p-3 shadow' fluid key={index} style={{marginBottom:"30px", width:"75%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+            <Jumbotron fluid>
                 {this.renderImages(post.images)}
                 <p># of Photos You Want to Post: not yet implemented</p>
                 <p> Your Potential Captions</p>
                 {this.renderCaptions(post.captions)}
                 <p>Your Tags: not yet implemented</p>
-            </Container>
+            </Jumbotron>
         );
         return listItems;
     }
@@ -66,17 +70,61 @@ class FeedbackView extends React.Component {
     }
 
     render() {
+        const posts = this.state.feedback.map((post, i) => {
+            if (post.ratings.length > 0) {
+                let picSum = Array(post.images.length).fill(0);
+                let capSum = Array(post.captions.length).fill(0);
+
+                post.ratings.forEach((rating) => {
+                    picSum[rating.topPic] += 1;
+                    capSum[rating.topCaption] += 1;
+                });
+
+                const picPerc = picSum.map((sum) => Math.floor(sum / post.ratings.length * 100.0).toString() + '%');
+                const capPerc = capSum.map((sum) => Math.floor(sum / post.ratings.length * 100.0).toString() + '%');
+                
+                const captionRatings = post.captions.map((caption, i) => 
+                    <li key={i}>
+                        "{caption}" - <b>{capPerc[i]}</b>
+                    </li>
+                );
+
+                return (
+                    <Jumbotron fluid key={i} className='p-3'>
+                        <ImagePagination images={post.images} labels={picPerc}/>
+                        <h5 className='mt-3 mb-3'>{post.ratings.length} rating{(post.ratings.length > 1) ? 's' : ''} in!</h5>
+                        <h6>Captions:</h6>
+                        <ul className='mb-0'>
+                            {captionRatings}
+                        </ul>
+                    </Jumbotron>
+                )
+            } else {
+                const captions = post.captions.map((caption, i) => 
+                    <li key={i}>
+                        "{caption}"
+                    </li>
+                );
+
+                return (
+                    <Jumbotron fluid key={i} className='p-3'>
+                        <ImagePagination images={post.images}/>
+                        <h5 className='mt-3 mb-3'>No ratings yet!</h5>
+                        <h6>Captions:</h6>
+                        <ul className='mb-0'>
+                            {captions}
+                        </ul>
+                    </Jumbotron>
+                )
+            }
+        });
+
         return (
-            <div>
-                <h1 style={{display:"flex", flexDirection: "column", alignItems:"center"}}>Your Feedback</h1>
-                {
-                    (this.state.feedback.length > 0)
-                        ? this.renderPosts(this.state.feedback)
-                        : (this.state.loading)
-                            ? <p>Loading...</p>
-                            : <p>You have made no posts yet. Make one now!</p>
-                }
-            </div>
+            <Container className='bg-light rounded p-3 shadow' fluid>
+                <h4 className='mb-3'>View feedback on your posts from people around the world!</h4>
+
+                {posts}
+            </Container>
         );
     }
 

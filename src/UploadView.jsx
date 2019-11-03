@@ -4,7 +4,9 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
-import Image from 'react-bootstrap/Image';
+import Jumbotron from 'react-bootstrap/Jumbotron';
+
+import ImagePagination from './ImagePagination';
 
 const MAX_CAPTIONS = 5;
 
@@ -25,11 +27,11 @@ class CaptionInput extends React.Component {
 
     render() {
         return (
-            <InputGroup className='mb-3'>
+            <InputGroup className={this.props.last ? 'mb-0' : 'mb-3'}>
                 {
-                    (this.props.ind > 0)
+                    ((this.props.ind > 0) || (this.props.ind == 0 && !(this.props.last)))
                         ? <InputGroup.Prepend>
-                            <Button variant='outline-secondary' onClick={this.handleRemove}>Remove</Button>
+                            <Button variant='outline-danger' onClick={this.handleRemove}>Remove</Button>
                         </InputGroup.Prepend>
                         : null
                 }
@@ -37,7 +39,7 @@ class CaptionInput extends React.Component {
                 {
                     (this.props.last && this.props.ind < MAX_CAPTIONS - 1)
                         ? <InputGroup.Append>
-                            <Button variant='outline-secondary' onClick={this.props.onAdd}>Add</Button>
+                            <Button variant='outline-primary' onClick={this.props.onAdd}>Add</Button>
                         </InputGroup.Append>
                         : null
                 }
@@ -47,18 +49,14 @@ class CaptionInput extends React.Component {
 }
 
 function ImageDisplay(props) {
-    const items = props.files.map((file, index) => 
-        <Image src={window.URL.createObjectURL(file)} className='h-100 mr-2' style={{objectFit: 'contain'}} rounded/>
-    );
-    if (items.length > 0) {
+    const images = props.files.map((file, index) => window.URL.createObjectURL(file));
+    if (images.length > 0) {
         return (
-            <div className='mb-3'>
-                <label>Image Preview</label>
-                <div className='d-inline-flex' style={{height: '35vh', width: '100%', overflowX: 'scroll'}}>
-                    {items}
-                </div>
-            </div>
-        ) 
+            <>
+                <h5 className='mt-3'>Image Preview:</h5>
+                <ImagePagination images={images} />
+            </>
+        );
     } else return null;
 }
 
@@ -119,6 +117,8 @@ class UploadView extends React.Component {
             files: newFiles,
             error: (invalid.length > 0) ? `${invalid.join(', ')} image${(invalid.length == 1) ? ' is ' : 's are '} too large. Max file size is 10 MB.` : ''
         });
+
+        e.target.value = '';
     }
 
     handleSubmit = (e) => {
@@ -144,6 +144,11 @@ class UploadView extends React.Component {
 
         if (captions.length == 0) {
             this.setState({error: 'No valid captions entered!'});
+            return;
+        }
+
+        if (this.state.files.length == 1 && captions.length == 1) {
+            this.setState({error: 'Need at least 2 of either images or captions!'});
             return;
         }
 
@@ -176,17 +181,21 @@ class UploadView extends React.Component {
 
         return (
             <Container className='bg-light rounded p-3 shadow' fluid>
-                <h5 className='mb-3'>Post your ideas for the world to see!</h5>
+                <h4 className='mb-3'>See what the world thinks about your social media ideas!</h4>
 
-                <label>Upload Images</label>
-                <InputGroup className='mb-3'>
-                    <FormControl type='file' accept="image/png, image/jpeg" multiple onChange={this.handleImageChange}/>
-                </InputGroup>
+                <Jumbotron className='p-3'>
+                    <h5>Upload Images</h5>
+                    <InputGroup>
+                        <FormControl type='file' accept="image/png, image/jpeg" multiple onChange={this.handleImageChange}/>
+                    </InputGroup>
 
-                <ImageDisplay files={this.state.files}/>
+                    <ImageDisplay files={this.state.files}/>
+                </Jumbotron>
 
-                <label>Enter Potential Captions:</label>
-                {captionInputs}
+                <Jumbotron className='p-3'>
+                    <h5>Enter Potential Captions:</h5>
+                    {captionInputs}
+                </Jumbotron>
 
                 <InputGroup className='mb-0'>
                     <Button onClick={this.handleSubmit}>Upload</Button>

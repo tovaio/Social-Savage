@@ -51,7 +51,7 @@ class App extends React.Component {
             }}>
                 <Container fluid>
                     <Row className='justify-content-center'>
-                        <Col xs={12} lg={10}>
+                        <Col xs={12} lg={8}>
                             <Container fluid>
                                 {
                                     this.state.loginInfo.loggedIn && 

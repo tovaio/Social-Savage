@@ -58,14 +58,16 @@ const db = mongoose.connection;
 db.on('error', (err) => console.error(err.stack));
 
 const userSchema = new mongoose.Schema({
-    googleUserId: String
+    googleUserId: String,
+    voted: [mongoose.Schema.Types.ObjectId]
 });
 
 const User = mongoose.model('User', userSchema);
 
 async function createUser(googleUserId) {
     return new User({
-        googleUserId: googleUserId
+        googleUserId: googleUserId,
+        voted: []
     }).save();
 }
 
@@ -78,21 +80,10 @@ const postSchema = new mongoose.Schema({
     images: [String],
     captions: [String],
     ratings: [{
-        rater: mongoose.Schema.Types.ObjectId,
         topPic: Number,
         topCaption: Number
     }]
 });
-
-postSchema.methods.hasBeenSeenBy = (user) => {
-    for (let i = 0; i < this.ratings.length; i++) {
-        const rating = this.ratings[i];
-        if (rating.rater == user._id) {
-            return true;
-        }
-    }
-    return false;
-};
 
 const Post = mongoose.model('Post', postSchema);
 
@@ -113,6 +104,42 @@ async function makePost(_id, files, captions) {
 
 async function getUserPosts(_id) {
     return await Post.find({author: _id});
+}
+
+async function getUnvotedPosts(_id, offset, limit) {
+    const user = await User.findById(_id);
+    return await Post.find({
+        _id: {
+            $not: {
+                $in: user.voted
+            }
+        },
+        author: {
+            $ne: user._id
+        }
+    }).skip(offset).limit(limit);
+}
+
+async function votePost(_id, postId, topPic, topCaption) {
+    await Post.findByIdAndUpdate(
+        postId,
+        {
+            $push: {
+                ratings: {
+                    topPic: topPic,
+                    topCaption: topCaption
+                }
+            }
+        }
+    );
+    await User.findByIdAndUpdate(
+        _id,
+        {
+            $push: {
+                voted: postId
+            }
+        }
+    );
 }
 
 /**
@@ -241,6 +268,21 @@ app.post('/upload', upload.any(), async (req, res) => {
     }
 });
 
+app.get('/vote', async (req, res) => {
+    try {
+        if ('userInfo' in req.session) {
+            const { postId, topPic, topCaption } = req.query;
+            await votePost(req.session.userInfo._id, postId, topPic, topCaption);
+            res.sendStatus(200);
+        } else {
+            res.status(400).send({error: 'Not logged in.'});
+        }
+    } catch (err) {
+        console.error(err.stack);
+        res.status(500).send({error: err.stack});
+    }
+});
+
 app.get('/rate', async (req, res) => {
     // for (let i = 0; i < 30; i++) {
     //     await new Post({
@@ -256,7 +298,7 @@ app.get('/rate', async (req, res) => {
     // }
     if ('userInfo' in req.session) {
         const { offset, limit } = req.query;
-        const posts = await Post.find({}).skip(parseInt(offset)).limit(parseInt(limit));
+        const posts = await getUnvotedPosts(req.session.userInfo._id, parseInt(offset), parseInt(limit));
         res.send(posts);
     } else {
         res.status(400).send({error: 'Not logged in.'});
