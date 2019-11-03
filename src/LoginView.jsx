@@ -10,7 +10,7 @@ class LoginView extends React.Component {
     handleSuccess = (response) => {
         const tokenId = response.Zi.id_token;
         request.post({
-            uri: url.resolve(location.href, '/googleAuth'),
+            uri: url.resolve(location.href, '/login'),
             json: {
                 tokenId: tokenId
             }
@@ -31,7 +31,7 @@ class LoginView extends React.Component {
 
     componentDidMount() {
         request.get({
-            uri: url.resolve(location.href, '/googleAuth')
+            uri: url.resolve(location.href, '/isLoggedIn')
         }, (err, res, body) => {
             if (err) {
                 console.error(err);
