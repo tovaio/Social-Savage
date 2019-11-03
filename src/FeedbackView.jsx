@@ -1,6 +1,13 @@
 import Carousel from 'react-bootstrap/Carousel'
+import request from 'browser-request';
+import url from 'url';
 
 class FeedbackView extends React.Component {
+
+    state = {
+        loading: true,
+        feedback: []
+    }
 
     feedbackInfo = {
         posts: [
@@ -56,35 +63,61 @@ class FeedbackView extends React.Component {
         );
         return (<ul>{listItems}</ul>);
     };
+
     renderImages = (pics) => {
         const listItems = pics.map((pic, index) =>
             <Carousel.Item key={index}>
-                <img src= {pic} height={500} width={1200}/>
+                <img src={pic} height={500} width={1200}/>
             </Carousel.Item>
         );
         return (<Carousel>{listItems}</Carousel>);
     };
+
     renderPosts = (posts) => {
         const listItems = posts.map((post, index) =>
-            (<div style={{padding: "20px 20px 20px 20px"}}>
-                {this.renderImages(post.pictures)}
-                <h2># of Photos You Want to Post: {post.goalPics}</h2>
-                <h2> Your Potential Captions</h2>
-                {this.renderCaptions(post.suggested_captions)}
-                <h2>Your Tags</h2>
-                {this.renderCaptions(post.tags)}
-            </div>)
+            <div key={index} style={{padding: "20px 20px 20px 20px"}}>
+                {this.renderImages(post.images)}
+                <p># of Photos You Want to Post: not yet implemented</p>
+                <p> Your Potential Captions</p>
+                {this.renderCaptions(post.captions)}
+                <p>Your Tags: not yet implemented</p>
+            </div>
         );
         return listItems;
+    }
+
+    componentDidMount() {
+        this.setState({
+            loading: true,
+            feedback: []
+        });
+
+        request.get({
+            uri: url.resolve(location.href, '/feedback')
+        }, (err, res, body) => {
+            if (err) {
+                console.error(err);
+            } else {
+                body = JSON.parse(body);
+                this.setState({
+                    loading: false,
+                    feedback: body
+                });
+            }
+        });
     }
 
     render() {
         return (
             <div>
                 <h1>Your Feedback</h1>
-                <ul>
-                    {this.renderPosts(this.feedbackInfo.posts)}
-                </ul>
+                {
+                    (this.state.feedback.length > 0)
+                        ? this.renderPosts(this.state.feedback)
+                        : (this.state.loading)
+                            ? <p>Loading...</p>
+                            : <p>You have made no posts yet. Make one now!</p>
+                }
             </div>
         );
     }

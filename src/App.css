@@ -4,6 +4,6 @@
          url('./fonts/Helvetica-Light.woff2') format('woff2');
 }
 
-#title {
-    font-family: 'Helvetica Light', Helvetica, sans-serif;
+#errorText {
+    color: red;
 }

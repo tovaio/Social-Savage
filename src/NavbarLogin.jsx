@@ -9,8 +9,8 @@ const CLIENT_ID = "883452357556-rsf99lsl7dl28f092b86q5j5aqk989bf.apps.googleuser
 class NavbarLogin extends React.Component {
 
     handleLogoutSuccess = () => {
-        request.get({
-            uri: url.resolve(location.href, '/googleAuth?logout=true')
+        request.post({
+            uri: url.resolve(location.href, '/logout')
         }, (err, res, body) => {
             if (err) {
                 console.error(err);
