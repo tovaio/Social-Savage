@@ -245,6 +245,16 @@ app.post('/upload', upload.any(), async (req, res) => {
     }
 });
 
+app.get('/rate', async (req, res) => {
+    if ('userInfo' in req.session) {
+        const posts = await Post.find({});
+        console.log(posts);
+        res.send(posts);
+    } else {
+        res.status(400).send({error: 'Not logged in.'});
+    }
+})
+
 app.get('/feedback', async (req, res) => {
     if ('userInfo' in req.session) {
         const posts = await getUserPosts(req.session.userInfo._id);

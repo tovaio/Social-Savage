@@ -1,7 +1,10 @@
 import InfiniteScroll from 'react-infinite-scroll-component';
+import request from 'browser-request';
+import url from 'url';
+
 
 const style = {
-    height: 30,
+    // height: 30,
     border: "1px solid green",
     margin: 6,
     padding: 8
@@ -9,16 +12,36 @@ const style = {
 
 class RateView extends React.Component {
     state = {
-        items: Array.from({ length: 20 })
+        items: Array.from({ length: 20 }),
+        loading: false,
+        rate_list: []
     };
+
+    componentDidMount() {
+        this.setState({
+            loading: true,
+            rate_list: []
+        });
+        this.fetchMoreData();
+    }
+
     fetchMoreData = () => {
         // a fake async api call like which sends
-        // 20 more records in 1.5 secs
-        setTimeout(() => {
-            this.setState({
-                items: this.state.items.concat(Array.from({ length: 20 }))
-            });
-        }, 1500);
+        request.get({
+            uri: url.resolve(location.href, '/rate')
+        }, (err, res, body) => {
+            if (err) {
+                console.error(err);
+            } else {
+                body = JSON.parse(body);
+                console.log(body)
+                this.setState({
+                    loading: false,
+                    rate_list: body
+                });
+            }
+        });
+        console.log("fetch more data")
     };
     render() {
         return (
@@ -31,9 +54,9 @@ class RateView extends React.Component {
                     hasMore={true}
                     loader={<h4>Loading...</h4>}
                 >
-                    {this.state.items.map((i, index) => (
+                    {this.state.rate_list.map((item, index) => (
                         <div style={style} key={index}>
-                            div - #{index}
+                            {JSON.stringify(item)}
                         </div>
                     ))}
                 </InfiniteScroll>
