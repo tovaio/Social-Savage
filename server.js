@@ -246,9 +246,21 @@ app.post('/upload', upload.any(), async (req, res) => {
 });
 
 app.get('/rate', async (req, res) => {
+    // for (let i = 0; i < 30; i++) {
+    //     await new Post({
+    //         author: mongoose.Types.ObjectId(),
+    //         images: ["https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"],
+    //         captions: ['test caption'],
+    //         ratings: [{
+    //             rater: mongoose.Types.ObjectId(),
+    //             topPic: 0,
+    //             topCaption: 0
+    //         }]
+    //     }).save();
+    // }
     if ('userInfo' in req.session) {
-        const posts = await Post.find({});
-        console.log(posts);
+        const { offset, limit } = req.query;
+        const posts = await Post.find({}).skip(parseInt(offset)).limit(parseInt(limit));
         res.send(posts);
     } else {
         res.status(400).send({error: 'Not logged in.'});
