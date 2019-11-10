@@ -1,21 +1,26 @@
-# VandyHacks2019
-Project for Vandy Hacks VI: Art Edition
+# Social Savage
 
-## How to build and run
+Project for Vandy Hacks VI: Art Edition (2019, Vanderbilt University).
 
-Open a terminal, navigate to the repository directory, and run this command:
+Won "Best use of MongoDB: Atlas" (MLH Sponsored Prize)
+
+Consists of an Express.js backend which serves the frontend (bundled by webpack) and acts as an API for the frontend to retrieve data. Images uploaded to the server are stored in Cloudinary, and user/post data are stored in a MongoDB Atlas cluster.
+
+## Install Dependencies
 
 ```
 npm install
 ```
 
-Then, to run the server in a development environment (meaning the webpage automatically updates with changes to components), run this command:
+## How to Build and Run
+
+### Development Environment
 
 ```
 npm run server
 ```
 
-To run it in production mode (not needed for the hackathon, but just in case):
+### Production Environment
 
 ```
 npm run build
